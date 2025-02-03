@@ -13,8 +13,9 @@ class Node {
 public class MergeSortedLL {
     static Node head1 = null;
     static Node head2 = null;
+    static Node mergedHead;
 
-    public static void insert(Node head, int data) {
+    public static Node insert(Node head, int data) {
         Node newNode = new Node(data);
         if (head == null) {
             head = newNode;
@@ -25,26 +26,41 @@ public class MergeSortedLL {
             }
             temp.next = newNode;
         }
+        return head;  
     }
 
-    public static Node mergeSortedLists(Node head1, Node head2) {
-        if (head1 == null) return head2;
-        if (head2 == null) return head1;
+    static void merge() {
+        Node temp1 = head1;
+        Node temp2 = head2;
+        Node mergedTail = null;
+        mergedHead = null;
 
-        if (head1.data < head2.data) {
-            head1.next = mergeSortedLists(head1.next, head2);
-            return head1;
-        } else {
-            head2.next = mergeSortedLists(head1, head2.next);
-            return head2;
+        while (temp1 != null && temp2 != null) {
+            if (temp1.data < temp2.data) {
+                if (mergedHead == null) {
+                    mergedHead = temp1;
+                    mergedTail = mergedHead;
+                } else {
+                    mergedTail.next = temp1;
+                    mergedTail = mergedTail.next;
+                }
+                temp1 = temp1.next;
+            } else {
+                if (mergedHead == null) {
+                    mergedHead = temp2;
+                    mergedTail = mergedHead;
+                } else {
+                    mergedTail.next = temp2;
+                    mergedTail = mergedTail.next;
+                }
+                temp2 = temp2.next;
+            }
         }
-    }
 
-    public static void printList(Node head) {
-        Node current = head;
-        while (current != null) {
-            System.out.print(current.data + " ");
-            current = current.next;
+        if (temp1 != null) {
+            mergedTail.next = temp1;
+        } else if (temp2 != null) {
+            mergedTail.next = temp2;
         }
     }
 
@@ -54,16 +70,20 @@ public class MergeSortedLL {
         int n1 = sc.nextInt();
         for (int i = 0; i < n1; i++) {
             int data = sc.nextInt();
-            insert(head1, data);
+            head1 = insert(head1, data);  
         }
 
         int n2 = sc.nextInt();
         for (int i = 0; i < n2; i++) {
             int data = sc.nextInt();
-            insert(head2, data);
+            head2 = insert(head2, data); 
         }
 
-        Node mergedHead = mergeSortedLists(head1, head2);
-        printList(mergedHead);
+        merge();
+
+        while(mergedHead != null) {
+            System.out.print(mergedHead.data + "->");
+            mergedHead = mergedHead.next;
+        } System.out.print("NULL");
     }
 }
