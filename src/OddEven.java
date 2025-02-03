@@ -1,93 +1,88 @@
-import java.util.Scanner;
+import java.util.*;
 
 public class OddEven {
-    private Node head;
-
-    class Node {
+    static class Node {
         int data;
         Node next;
 
-        Node(int val) {
-            data = val;
-            next = null;
+        Node(int data) {
+            this.data = data;
+            this.next = null;
         }
     }
 
-    public void addNode(int data1) {
-        Node newNode = new Node(data1);
-        if (head == null) {
-            head = newNode;
-        } else {
-            Node temp = head;
-            while (temp.next != null) {
-                temp = temp.next;
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        String[] input = sc.nextLine().split(" ");
+        Node head = createLinkedList(input);
+        head = rearrangeOddEven(head);
+        printLinkedList(head);
+
+        sc.close();
+    }
+
+    public static Node createLinkedList(String[] input) {
+        Node head = null, tail = null;
+
+        for (String value : input) {
+            if (value.equals("-1")) break;
+            int data = Integer.parseInt(value);
+
+            Node newNode = new Node(data);
+            if (head == null) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail.next = newNode;
+                tail = newNode;
             }
-            temp.next = newNode;
         }
+
+        return head;
     }
 
-    public void segregateEvenOdd() {
-        if (head == null || head.next == null) {
-            return;
-        }
-        Node temp = head;
-        Node evenHead = null;
-        Node oddHead = null;
-        Node evenTail = null;
-        Node oddTail = null;
+    public static Node rearrangeOddEven(Node head) {
+        if (head == null) return null;
 
-        while (temp != null) {
-            if (temp.data % 2 == 0) {
+        Node oddHead = null, oddTail = null;
+        Node evenHead = null, evenTail = null;
+
+        Node current = head;
+
+        while (current != null) {
+            if (current.data % 2 == 0) {
                 if (evenHead == null) {
-                    evenHead = evenTail = temp;
+                    evenHead = current;
+                    evenTail = current;
                 } else {
-                    evenTail.next = temp;
-                    evenTail = evenTail.next;
+                    evenTail.next = current;
+                    evenTail = current;
                 }
             } else {
                 if (oddHead == null) {
-                    oddHead = oddTail = temp;
+                    oddHead = current;
+                    oddTail = current;
                 } else {
-                    oddTail.next = temp;
-                    oddTail = oddTail.next;
+                    oddTail.next = current;
+                    oddTail = current;
                 }
             }
-            temp = temp.next;
+            current = current.next;
         }
 
-        if (oddTail != null) {
-            oddTail.next = evenHead;
-        }
+        if (oddTail != null) oddTail.next = evenHead;
+        if (evenTail != null) evenTail.next = null;
 
-        if (evenTail != null) {
-            evenTail.next = null;
-        }
-
-        head = oddHead;
+        return oddHead != null ? oddHead : evenHead;
     }
 
-    public void printlst() {
+    public static void printLinkedList(Node head) {
         Node current = head;
         while (current != null) {
             System.out.print(current.data + " ");
             current = current.next;
         }
-    }
-
-    public static void main(String[] args) {
-        int data;
-        Scanner input = new Scanner(System.in);
-        OddEven list1 = new OddEven();
-
-        while (true) {
-            data = input.nextInt();
-            if (data == -1) {
-                break;
-            }
-            list1.addNode(data);
-        }
-
-        list1.segregateEvenOdd();
-        list1.printlst();
+        System.out.println();
     }
 }
